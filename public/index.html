@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Cover Letter Generator — Tailored Cover Letters in Seconds</title>
+<meta name="description" content="Free AI cover letter generator. Paste the job description and your background, get a tailored cover letter you can edit and send. Powered by Cloudflare Workers AI.">
+<meta name="keywords" content="ai cover letter generator, cover letter writer, tailored cover letter, job application letter, ai resume tool">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta name="theme-color" content="#1e40af">
+
+<link rel="canonical" href="https://toolara.dev/ai-cover-letter-generator/">
+<link rel="alternate" hreflang="en" href="https://toolara.dev/ai-cover-letter-generator/">
+<link rel="alternate" hreflang="zh-Hans" href="https://toolara.dev/ai-cover-letter-generator/zh/">
+<link rel="alternate" hreflang="x-default" href="https://toolara.dev/ai-cover-letter-generator/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="AI Cover Letter Generator — Tailored Cover Letters">
+<meta property="og:description" content="Paste a job description and your background, get a tailored cover letter.">
+<meta property="og:url" content="https://toolara.dev/ai-cover-letter-generator/">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "AI Cover Letter Generator",
+  "url": "https://toolara.dev/ai-cover-letter-generator/",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any",
+  "description": "Free AI cover letter generator that writes tailored cover letters from a job description and candidate background.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="hero">
+  <div class="lang-switch">
+    <select id="langSelect" onchange="setLang(this.value)" aria-label="Language">
+      <option value="en">English</option>
+      <option value="zh">简体中文</option>
+    </select>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-badge">📄 AI-powered</div>
+    <h1 data-i18n="title">AI Cover Letter Generator</h1>
+    <p data-i18n="subtitle">Paste the job description and your background. Get a tailored cover letter in seconds.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card">
+    <h2 class="visually-hidden" data-i18n="calcHeading">Cover letter generator</h2>
+
+    <div class="row">
+      <div>
+        <label for="jobTitle" data-i18n="jobTitleLabel">Job title</label>
+        <input type="text" id="jobTitle" placeholder="Senior Product Manager">
+      </div>
+      <div>
+        <label for="company" data-i18n="companyLabel">Company (optional)</label>
+        <input type="text" id="company" placeholder="Acme Inc.">
+      </div>
+    </div>
+
+    <label for="jobDescription" data-i18n="jobDescLabel">Job description (optional but recommended)</label>
+    <textarea id="jobDescription" rows="5" placeholder="Paste the job posting here. The more detail, the more tailored the letter."></textarea>
+
+    <label for="background" data-i18n="backgroundLabel">Your background</label>
+    <textarea id="background" rows="6" placeholder="Summarize your relevant experience. Example: 6 years as a PM at two SaaS startups. Led the launch of a B2B analytics product that grew from 0 to $2M ARR. Strong in user research and cross-functional collaboration."></textarea>
+
+    <div class="row">
+      <div>
+        <label for="length" data-i18n="lengthLabel">Letter length</label>
+        <select id="length">
+          <option value="short" data-i18n="lenShort">Short — under 200 words</option>
+          <option value="medium" selected data-i18n="lenMedium">Medium — 300-350 words</option>
+          <option value="long" data-i18n="lenLong">Long — 450-500 words</option>
+        </select>
+      </div>
+      <div>
+        <label for="style" data-i18n="styleLabel">Writing style</label>
+        <select id="style">
+          <option value="standard" selected data-i18n="styleStandard">Standard professional</option>
+          <option value="conversational" data-i18n="styleConversational">Conversational</option>
+          <option value="achievement" data-i18n="styleAchievement">Achievement-focused</option>
+          <option value="career_change" data-i18n="styleCareerChange">Career change</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="calc" type="button" id="generateBtn" onclick="generate()" data-i18n="calcBtn">Generate cover letter</button>
+
+    <div id="loading" class="loading" style="display:none;">
+      <div class="spinner"></div>
+      <div data-i18n="loadingText">Writing your cover letter...</div>
+    </div>
+
+    <div id="error" class="error" style="display:none;"></div>
+
+    <div id="result" role="region" aria-live="polite">
+      <div class="result-header">
+        <div class="result-label" data-i18n="resultLabel">Your cover letter</div>
+        <button class="copy-btn" type="button" onclick="copyResult()" data-i18n="copyBtn">Copy</button>
+        <span class="copy-copied" id="copyCopied" data-i18n="copyCopied">Copied!</span>
+      </div>
+      <div class="result-box" id="resultText"></div>
+      <div class="result-meta" id="resultMeta"></div>
+      <div class="result-disclaimer" data-i18n="resultDisclaimer">Review carefully before sending. Add specific details only you can provide — the AI cannot invent real achievements.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2 data-i18n="whatIsTitle">What does this tool do?</h2>
+    <p data-i18n="whatIsText">Most cover letters are either generic templates or rewritten resumes. This tool reads the job description, matches it against your background, and writes a letter that connects the two. It highlights where your experience directly fits the role and speaks to what the employer is actually looking for — not just a list of past jobs.</p>
+  </section>
+
+  <section>
+    <h2 data-i18n="tipsTitle">Tips for better results</h2>
+    <ul>
+      <li data-i18n="tip1"><strong>Paste the full job description.</strong> The more detail you give, the more targeted the letter. If the job posting lists "requirements" and "responsibilities," include both.</li>
+      <li data-i18n="tip2"><strong>Be specific in your background.</strong> "Managed marketing" produces generic output. "Ran paid acquisition for a DTC skincare brand, grew ROAS from 1.8 to 3.2 over 6 months" produces targeted output.</li>
+      <li data-i18n="tip3"><strong>Choose achievement style for competitive roles.</strong> For senior positions or industries like consulting, finance, or tech, the achievement-focused style leads with numbers and outcomes.</li>
+      <li data-i18n="tip4"><strong>Use career change style if switching fields.</strong> It reframes past experience as relevant rather than treating it as a gap.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2 data-i18n="faqTitle">Frequently asked questions</h2>
+    <h3 data-i18n="faq1q">Is this tool free?</h3>
+    <p data-i18n="faq1a">Yes. It runs on Cloudflare Workers AI with a free daily quota. Normal use won't hit limits.</p>
+
+    <h3 data-i18n="faq2q">Will this get me flagged by employers?</h3>
+    <p data-i18n="faq2a">Not if you treat it as a draft. The tool produces a starting point. Good candidates edit the output to add specific details, correct anything inaccurate, and make it sound like them. Submitting raw AI output is obvious and hurts your application.</p>
+
+    <h3 data-i18n="faq3q">Is my information stored?</h3>
+    <p data-i18n="faq3a">No. Your job description and background are sent to the AI model for processing and discarded immediately after. Nothing is stored, logged, or used for training.</p>
+
+    <h3 data-i18n="faq4q">Does it invent achievements?</h3>
+    <p data-i18n="faq4a">No. The prompt explicitly tells the model not to invent numbers, employers, or achievements that aren't in your background. However, you should still review every sentence — the model can occasionally rephrase things in ways that overstate your experience.</p>
+
+    <h3 data-i18n="faq5q">What is the ideal cover letter length?</h3>
+    <p data-i18n="faq5a">One page, or roughly 300-400 words. Recruiters spend 6-8 seconds on a first scan. Medium length is the safest default. Use Short for high-volume applications where the role is a strong match; use Long only when the job posting asks for a detailed letter.</p>
+
+    <div class="disclaimer" data-i18n="disclaimer"><strong>Disclaimer:</strong> This tool generates draft cover letters. Always review and personalize before submitting. Never submit a cover letter you haven't read in full.</div>
+  </section>
+</main>
+
+<footer class="footer" data-i18n="footer">Runs on Cloudflare Workers AI. Your text is not stored.</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
